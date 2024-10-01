@@ -148,7 +148,7 @@ void printOut(int configBits[MAX_CONFIG_BITS], char questions[MAX_QUESTIONS][MAX
 
     if (configBits[0] == 1 || configBits[1] == 1 ){
 
-        printf("\nFOR EACH QUESTION BELOW, RELATIVE PERCENTUAL FREQUENCIES ARE COMPUTED FOR EACH LEVEL OF AGREEMENT\n\n");
+        printf("\nFOR EACH QUESTION BELOW, RELATIVE PERCENTUAL FREQUENCIES ARE COMPUTED FOR EACH LEVEL OF agreement\n\n");
         
         int i =0;
 
