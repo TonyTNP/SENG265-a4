@@ -18,6 +18,9 @@
 #define MAX_LINE_LEN 4000 // Max length for line
 
 
+//Cannot figure out how to get input tests 1,2&4 to print the type of response corresponding each question;
+//The scores match, and the code parses through the text file. 
+//However I still cannot figure this out!!!
 
 void calcAvg(int scoresArray[MAX_QUESTIONS][NUMBER_OF_RESPONDANTS]) { //loops through answers and calculates average
 
@@ -163,6 +166,11 @@ void printOut(int configBits[MAX_CONFIG_BITS], char questions[MAX_QUESTIONS][MAX
 
                 printf("%.2f: ", percentage);
                 
+		//switch (likert_array[i])
+		  //  case 1: print fully disagree
+		//case 2: print ...
+		//case 3: print fully agree
+			
                 printf("%s\n",likert_array[j]);
 
                 }
@@ -258,13 +266,15 @@ void likert_scale(char *data, char likert_array[MAX_TYPES][MAX_TYPES_LEN]){
     char *tok;
     tok = strtok(data, ",\n");
     int i =0;
-
+ 
     // store in array containing all options
     while(tok != NULL) {
         strncpy(likert_array[i], tok, MAX_TYPES_LEN);
         tok = strtok(NULL, ",\n");
         i++;
-    }
+	
+	}
+    
 }
 
 int parse_freqs(char *data, int freqs[MAX_QUESTIONS][MAX_TYPES], int numRespondants, int reverseArray[MAX_QUESTIONS], int scoresArray[MAX_QUESTIONS][NUMBER_OF_RESPONDANTS]){
