@@ -8,30 +8,37 @@ void parse_frequenciess(char *data, int **frequencies, int num_respondents, int 
     char *token = strtok(data, ",\n");
     int i = 0;
 
+    //printf("Token1: %s\n", token);
     token = strtok(NULL, ",\n");
+    //printf("Token2: %s\n", token);
     token = strtok(NULL, ",\n");
+    //printf("Token3: %s\n\n", token);
     token = strtok(NULL, ",\n");
+
+    // if the filter variable is set
 
     while (token != NULL && i < MAX_QUESTIONS) {
         // printf("Token: %s\n", token);
         if (reverse_array[i] == 0) {
             // printf("RESPONDANT: %d;  INDEX: %d\n", respondent_index, i);
+
+            //comparing tokens with responses and updating the frequencies array
             if (strcmp(token, "fully disagree") == 0) {
                 frequencies[i][0]++;
                 scores_array[i][respondent_index] = 1;
-            } else if (strcmp(token, "disagree") == 0) {
+            } if (strcmp(token, "disagree") == 0) {
                 frequencies[i][1]++;
                 scores_array[i][respondent_index] = 2;
-            } else if (strcmp(token, "partially disagree") == 0) {
+            } if (strcmp(token, "partially disagree") == 0) {
                 frequencies[i][2]++;
                 scores_array[i][respondent_index] = 3;
-            } else if (strcmp(token, "partially agree") == 0) {
+            } if (strcmp(token, "partially agree") == 0) {
                 frequencies[i][3]++;
                 scores_array[i][respondent_index] = 4;
-            } else if (strcmp(token, "agree") == 0) {
+            } if (strcmp(token, "agree") == 0) {
                 frequencies[i][4]++;
                 scores_array[i][respondent_index] = 5;
-            } else if (strcmp(token, "fully agree") == 0) {
+            } if (strcmp(token, "fully agree") == 0) {
                 frequencies[i][5]++;
                 scores_array[i][respondent_index] = 6;
             }
@@ -40,19 +47,19 @@ void parse_frequenciess(char *data, int **frequencies, int num_respondents, int 
             if (strcmp(token, "fully disagree") == 0) {
                 frequencies[i][0]++;
                 scores_array[i][respondent_index] = 6;
-            } else if (strcmp(token, "disagree") == 0) {
+            } if (strcmp(token, "disagree") == 0) {
                 frequencies[i][1]++;
                 scores_array[i][respondent_index] = 5;
-            } else if (strcmp(token, "partially disagree") == 0) {
+            } if (strcmp(token, "partially disagree") == 0) {
                 frequencies[i][2]++;
                 scores_array[i][respondent_index] = 4;
-            } else if (strcmp(token, "partially agree") == 0) {
+            } if (strcmp(token, "partially agree") == 0) {
                 frequencies[i][3]++;
                 scores_array[i][respondent_index] = 3;
-            } else if (strcmp(token, "agree") == 0) {
+            } if (strcmp(token, "agree") == 0) {
                 frequencies[i][4]++;
                 scores_array[i][respondent_index] = 2;
-            } else if (strcmp(token, "fully agree") == 0) {
+            } if (strcmp(token, "fully agree") == 0) {
                 frequencies[i][5]++;
                 scores_array[i][respondent_index] = 1;
             }

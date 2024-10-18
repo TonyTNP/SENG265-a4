@@ -4,7 +4,7 @@
 #include "emalloc.h"
 #include "input_handling.h"
 
-void calculate_average(int **scores_array, int num_respondents) {
+void calculate_average(int **scores_array, int num_respondents) { //calculates average scores
     float av_C = 0, av_I = 0, av_G = 0, av_U = 0, av_P = 0;
 
     for (int a = 0; a < num_respondents; a++) {
