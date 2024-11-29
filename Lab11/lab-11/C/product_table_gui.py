@@ -47,6 +47,15 @@ class ProductTableGUI(QMainWindow):
         # TODO: Bring the code from the refresh_button_clicked() from the
         # previous exercise, and add it here.
 
+        # Refresh product data in the model
+        self.product_model.refresh_data()
+
+        # Adjust the column widths to fit the content
+        self.product_table.resizeColumnsToContents()
+
+        # Enable the table for interaction
+        self.product_table.setEnabled(True)
+
 
 
 
@@ -54,6 +63,11 @@ class ProductTableGUI(QMainWindow):
     def add_button_clicked(self):
         # TODO: After you fix the AddProductGUI class,add code here to
         # show that secondary window.
+
+        # Show the AddProductGUI window
+        self.add_product_gui.show()
+        
+        
 
 
     def list_product_requested(self):

@@ -117,6 +117,7 @@ class ListProductGUI(QMainWindow):
     def close_button_clicked(self):
         ''' 'close list product window '''
         # TODO: add code here to hide the list product's window when it is close.
+        self.hide()
 
 
 
