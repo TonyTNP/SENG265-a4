@@ -1,4 +1,4 @@
-# Lab 9, directory `D`: to dos for `Rectangle` class
+code test_geom# Lab 9, directory `D`: to dos for `Rectangle` class
 
 1. Copy over your `C/geometry.txt` into this directory.
 

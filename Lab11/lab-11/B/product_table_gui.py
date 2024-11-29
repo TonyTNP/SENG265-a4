@@ -42,12 +42,28 @@ class ProductTableGUI(QMainWindow):
         # class, call this method, fix the product description's column width to
         # better use the window size, and make the product table editable.
 
+        # Refresh product data in the model
+        self.product_model.refresh_data()
+
+        # Adjust the column widths to fit the content
+        self.product_table.resizeColumnsToContents()
+
+        # Make the product table editable
+        self.product_table.setEnabled(True)
 
 
 
     def clear_button_clicked(self):
         # TODO: call the reset() method in the table model and disable edits in
         #  the product table. (Do you understand why you should disable it?).
+
+        # Clear product data in the model
+        self.product_model.reset()
+
+        # Disable the product table to prevent edits
+        self.product_table.setEnabled(False)
+
+
 
 
 
