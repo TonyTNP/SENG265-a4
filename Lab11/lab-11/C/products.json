@@ -3,3 +3,4 @@
 {"__type__": "Product", "code": 345, "description": "Lindt Lindor Chocolate Bar", "price": 4.0}
 {"__type__": "Product", "code": 678, "description": "Trident Peppermint", "price": 1.99}
 {"__type__": "Product", "code": 987, "description": "Rooibos Tea", "price": 9.5}
+{"__type__": "Product", "code": "12345", "description": "car", "price": 3000.0}

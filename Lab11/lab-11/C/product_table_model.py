@@ -15,6 +15,14 @@ class ProductTableModel(QAbstractTableModel):
     def refresh_data(self):
         self._data = []
         # TODO: Bring your full refresh_data() code from the previous exercise.
+        # Fetch the list of products from the controller
+        products = self.controller.list_products()
+
+        # Transform the product list into a 2D list (rows and columns)
+        self._data = [[product.code, product.description, product.price] for product in products]
+
+        # Emit the layoutChanged signal to notify the QTableView of model changes
+        self.layoutChanged.emit()
 
 
 
