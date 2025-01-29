@@ -59,11 +59,16 @@ int read_csv_file(const char *filename, CurricularData data[]) {
 *Function: read_yaml_file
 ---------------------------
 *Reads data from a1-data-extracurricular.yaml and updates CurricularData array.
+* @brief Reads extracurricular data from a YAML file and updates the data array.
+ * @param filename The name of the YAML file.
+ * @param data The array of student records to update.
+ * @param num_records The number of records in the data array.
+ * @return int Returns 0 if successful, -1 if file opening fails.
 */
 
 int read_yaml_file(const char *filename, CurricularData data[], int num_records){
     FILE *file = fopen(filename, "r");
-    if(file==NULL){
+    if(file == NULL){
         printf("Error: Could not open file: %s\n", filename);
         return -1;
     }
@@ -71,18 +76,18 @@ int read_yaml_file(const char *filename, CurricularData data[], int num_records)
     char key[50], value[50];
     int record_id = -1;
     while (fscanf(file, " %49[^:]: %49[^\n]\n", key, value)!=EOF){
-        if(strcmp(key, "Record_ID")==0){
-            record_id=atoi(value);
-        } else if (record_id>=0){
-            for (int i=0; i<num_records; i++){
+        if(strcmp(key, "Record_ID") == 0){
+            record_id = atoi(value);
+        } else if (record_id >= 0){
+            for (int i = 0; i < num_records; i++){
                 if(data[i].record_id==record_id){
-                    if(strcmp(key, "Extracurricular_Activities")==0){
+                    if(strcmp(key, "Extracurricular_Activities") == 0){
                         strncpy(data[i].extracurricular_activities, value, sizeof(data[i].extracurricular_activities)-1);
                         data[i].extracurricular_activities[sizeof(data[i].extracurricular_activities)-1] = '\0'; // Null terminator
-                    } else if(strcmp(key, "Physical_Activity")==0){
+                    } else if(strcmp(key, "Physical_Activity") == 0){
                         data[i].physical_activity=atoi(value);
-                    } else if (strcmp(key, "Sleep_Hours")==0){
-                        data[i].sleep_hours=atoi(value);
+                    } else if (strcmp(key, "Sleep_Hours") == 0){
+                        data[i].sleep_hours = atoi(value);
                     }
                     break;
                 }
@@ -98,6 +103,10 @@ int read_yaml_file(const char *filename, CurricularData data[], int num_records)
 * Function: process_task
 ---------------------------
 * Processes the specified task and writes to output.csv
+* @brief Processes the given task and writes results to output.csv.
+ * @param task The task number to execute.
+ * @param data The array of student records.
+ * @param num_records The number of records in the array.
 */ 
 
 void process_task(int task, CurricularData data[], int num_records) {
@@ -110,8 +119,8 @@ void process_task(int task, CurricularData data[], int num_records) {
     switch(task) {
         case 1:
         fprintf(output, "Record_ID, Exam_Score\n");
-        for (int i=0; i<num_records; i++) {
-            if(data[i].exam_score>90) {
+        for (int i = 0; i < num_records; i++) {
+            if(data[i].exam_score > 90) {
                 fprintf(output, "%d, %d\n", 
                 data[i].record_id, 
                 data[i].exam_score);
@@ -121,7 +130,7 @@ void process_task(int task, CurricularData data[], int num_records) {
 
         case 2:
         fprintf(output, "Record_ID, Extracurricular_Activities, Physical_Activity, Sleep_Hours\n");
-        for (int i=0; i<num_records; i++) {
+        for (int i = 0; i < num_records; i++) {
             fprintf(output, "%d, %s, %d, %d\n", 
             data[i].record_id, 
             data[i].extracurricular_activities, 
@@ -132,8 +141,8 @@ void process_task(int task, CurricularData data[], int num_records) {
         
         case 3:
         fprintf(output, "Record_ID, Exam_Score, Extracurricula_Activities\n");
-        for (int i=0; i<num_records; i++) {
-            if(data[i].exam_score>90){
+        for (int i = 0; i < num_records; i++) {
+            if(data[i].exam_score > 90){
             fprintf(output, "%d, %d, %s\n", 
             data[i].record_id, 
             data[i].exam_score, 
@@ -144,8 +153,8 @@ void process_task(int task, CurricularData data[], int num_records) {
 
         case 4:
         fprintf(output, "Record_ID, Exam_Score\n");
-        for (int i=0; i<num_records; i++) {
-            if(data[i].attendance==100){
+        for (int i = 0; i < num_records; i++) {
+            if(data[i].attendance == 100){
             fprintf(output, "%d, %d\n", 
             data[i].record_id, 
             data[i].exam_score);
@@ -155,8 +164,8 @@ void process_task(int task, CurricularData data[], int num_records) {
 
         case 5:
         fprintf(output, "Record_ID, Exam_Score\n");
-        for(int i=0; i<num_records; i++){
-            if(data[i].sleep_hours>=data[i].hours_studied){
+        for(int i = 0; i < num_records; i++){
+            if(data[i].sleep_hours >= data[i].hours_studied){
                 fprintf(output, "%d, %d\n", 
                 data[i].record_id, 
                 data[i].exam_score);
@@ -166,8 +175,8 @@ void process_task(int task, CurricularData data[], int num_records) {
 
         case 6:
         fprintf(output, "Record_ID, Exam_Score, Extracurricular_Activities\n");
-        for(int i=0; i<num_records; i++){
-            if(data[i].exam_score<60){
+        for(int i = 0; i < num_records; i++){
+            if(data[i].exam_score < 60){
                 fprintf(output, "%d, %d, %s\n", 
                 data[i].record_id, 
                 data[i].exam_score, 
@@ -209,13 +218,13 @@ void print_data(const CurricularData data[], int size) {
  * @return int 0: No errors; 1: Errors produced.
  */
 int main(int argc, char *argv[]) {
-    if(argc<2){
+    if(argc < 2){
         printf("Usage: ./spf_analyzer --TASK=\"X\"\n");
         return -1;
     }
 
-    int task=0; //Defaults to zero in case of failure
-    if(strncmp(argv[1], "--TASK=", 7)==0) {
+    int task = 0; //Defaults to zero in case of failure
+    if(strncmp(argv[1], "--TASK=", 7) == 0) {
         task = atoi(argv[1]+7); //extract the number after "--TASK"
     } else {
         printf("Error: Invalid argument format. Expected --TASK = X\n");
