@@ -118,69 +118,53 @@ void process_task(int task, CurricularData data[], int num_records) {
 
     switch(task) {
         case 1:
-        fprintf(output, "Record_ID, Exam_Score\n");
+        fprintf(output,"Record_ID,Exam_Score\n");
         for (int i = 0; i < num_records; i++) {
             if(data[i].exam_score > 90) {
-                fprintf(output, "%d, %d\n", 
-                data[i].record_id, 
-                data[i].exam_score);
+                fprintf(output,"%d,%d\n",data[i].record_id,data[i].exam_score);
             }
         }
         break;
 
         case 2:
-        fprintf(output, "Record_ID, Extracurricular_Activities, Physical_Activity, Sleep_Hours\n");
+        fprintf(output,"Record_ID,Extracurricular_Activities,Physical_Activity,Sleep_Hours\n");
         for (int i = 0; i < num_records; i++) {
-            fprintf(output, "%d, %s, %d, %d\n", 
-            data[i].record_id, 
-            data[i].extracurricular_activities, 
-            data[i].physical_activity, 
-            data[i].sleep_hours);
+            fprintf(output,"%d,%s,%d,%d\n",data[i].record_id,data[i].extracurricular_activities,data[i].physical_activity,data[i].sleep_hours);
         }
         break;
         
         case 3:
-        fprintf(output, "Record_ID, Exam_Score, Extracurricula_Activities\n");
+        fprintf(output,"Record_ID,Exam_Score,Extracurricula_Activities\n");
         for (int i = 0; i < num_records; i++) {
             if(data[i].exam_score > 90){
-            fprintf(output, "%d, %d, %s\n", 
-            data[i].record_id, 
-            data[i].exam_score, 
-            data[i].extracurricular_activities);
+            fprintf(output,"%d,%d,%s\n",data[i].record_id,data[i].exam_score,data[i].extracurricular_activities);
             }
         }
         break;
 
         case 4:
-        fprintf(output, "Record_ID, Exam_Score\n");
+        fprintf(output,"Record_ID,Exam_Score\n");
         for (int i = 0; i < num_records; i++) {
             if(data[i].attendance == 100){
-            fprintf(output, "%d, %d\n", 
-            data[i].record_id, 
-            data[i].exam_score);
+            fprintf(output,"%d,%d\n",data[i].record_id,data[i].exam_score);
             }
         }
         break;
 
         case 5:
-        fprintf(output, "Record_ID, Exam_Score\n");
+        fprintf(output,"Record_ID,Exam_Score\n");
         for(int i = 0; i < num_records; i++){
             if(data[i].sleep_hours >= data[i].hours_studied){
-                fprintf(output, "%d, %d\n", 
-                data[i].record_id, 
-                data[i].exam_score);
+                fprintf(output,"%d,%d\n",data[i].record_id,data[i].exam_score);
             }
         }
         break;
 
         case 6:
-        fprintf(output, "Record_ID, Exam_Score, Extracurricular_Activities\n");
+        fprintf(output,"Record_ID,Exam_Score,Extracurricular_Activities\n");
         for(int i = 0; i < num_records; i++){
             if(data[i].exam_score < 60){
-                fprintf(output, "%d, %d, %s\n", 
-                data[i].record_id, 
-                data[i].exam_score, 
-                data[i].extracurricular_activities);
+                fprintf(output,"%d,%d,%s\n",data[i].record_id,data[i].exam_score,data[i].extracurricular_activities);
             }
         }
         break;
@@ -236,7 +220,7 @@ int main(int argc, char *argv[]) {
 
     int num_records = read_csv_file("data/a1-data-curricular.csv", data);
     read_yaml_file("data/a1-data-extracurricular.yaml", data, num_records);
-    process_task(task, data, num_records);
+    process_task(task,data,num_records);
     printf("Task %d completed. Output written to output.csv\n",task);
     return 0;
     
