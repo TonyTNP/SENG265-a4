@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>  // Needed for strcasecmp()
+
 
 #define MAX_RECORDS 6608
 
@@ -75,38 +77,36 @@ int read_yaml_file(const char *filename, CurricularData data[], int num_records)
         return -1;
     }
 
-    char key[50], value[50];
+    char key[250], value[250];
+    
     int record_id = -1;
 
     while (fscanf(file, " %49[^:]: %49[^\n]\n", key, value) != EOF) {
         if (strcmp(key, "Record_ID") == 0) {
             record_id = atoi(value);
-            //printf("Debug: Read from YAML -> Record_ID=%d\n", record_id); //Debug print; this prints
-            printf("Debug: RAW YAML Record_ID='%s' -> Parsed=%d\n", value, atoi(value)); //Debug print to check hidden spaces
-
-
-        } else if (record_id >= 0) {
-            
+            printf("Debug: RAW YAML Record_ID='%s' -> Parsed=%d\n", value, record_id);
+        } 
+        else if (record_id >= 0) {
             for (int i = 0; i < num_records; i++) {
-
-                //This is where the issue lies. The program takes time to print out this for loop with the message
-
-                //printf("Debug: Comparing CSV Record_ID=%d with YAML Record_ID=%d\n", data[i].record_id, record_id);  // Debug print; this takes a long time to print
-
-                if (data[i].record_id == record_id) {
-                    //printf("Debug: MATCH FOUND! CSV Record_ID=%d\n", data[i].record_id); // Debug print; This printed!
-
+                if (data[i].record_id == record_id) {  // mapping check
                     if (strcmp(key, "Extracurricular_Activities") == 0) {
                         strncpy(data[i].extracurricular_activities, value, sizeof(data[i].extracurricular_activities) - 1);
                         data[i].extracurricular_activities[sizeof(data[i].extracurricular_activities) - 1] = '\0';
 
-                        //printf("Debug: Matched Record_ID=%d -> Updated Extracurricular_Activities=%s\n", data[i].record_id, data[i].extracurricular_activities); // Debug print not printing
+                        // Fixes issue where "Yes" is not being assigned properly
+                        if (strcasecmp(data[i].extracurricular_activities, "Yes") == 0) {
+                            strcpy(data[i].extracurricular_activities, "Yes");
+                        } else {
+                            strcpy(data[i].extracurricular_activities, "No");
+                        }
 
-                    } else if (strcmp(key, "Physical_Activity") == 0) {
+                        printf("Debug: Updated Record_ID=%d -> Extracurricular_Activities=%s\n",
+                               data[i].record_id, data[i].extracurricular_activities);
+                    } 
+                    else if (strcmp(key, "Physical_Activity") == 0) {
                         data[i].physical_activity = atoi(value);
-                        //printf("Debug: Record %d -> Physical Activity: %d\n", record_id, data[i].physical_activity); //debug print
-
-                    } else if (strcmp(key, "Sleep_Hours") == 0) {
+                    } 
+                    else if (strcmp(key, "Sleep_Hours") == 0) {
                         data[i].sleep_hours = atoi(value);
                     }
                     break;
@@ -117,7 +117,6 @@ int read_yaml_file(const char *filename, CurricularData data[], int num_records)
     fclose(file);
     return 0;
 }
-
 
 
 /**
@@ -172,22 +171,28 @@ void process_task(int task, CurricularData data[], int num_records) {
             break;
         
         case 3:
-        fprintf(output,"Record_ID,Exam_Score,Extracurricula_Activities\n");
+        fprintf(output, "Record_ID,Exam_Score,Extracurricular_Activities\n");
         for (int i = 0; i < num_records; i++) {
-            if(data[i].exam_score > 90){
-            fprintf(output,"%d,%d,%s\n",data[i].record_id,data[i].exam_score,data[i].extracurricular_activities);
+            if (data[i].exam_score > 90) {  // Ensure we filter scores > 90
+
+                // Ensure the extracurricular field contains only "Yes" or "No"
+                if (strcasecmp(data[i].extracurricular_activities, "Yes") != 0) {
+                    strcpy(data[i].extracurricular_activities, "No");
+                }
+
+                // Debug print to verify each entry
+                printf("Debug: Writing to CSV -> Record_ID=%d, Exam_Score=%d, Extracurricular_Activities=%s\n",
+                    data[i].record_id, data[i].exam_score, data[i].extracurricular_activities);
+
+                // Write the validated data to the CSV
+                fprintf(output, "%d,%d,%s\n", 
+                        data[i].record_id, 
+                        data[i].exam_score, 
+                        data[i].extracurricular_activities);
             }
         }
         break;
 
-        case 4:
-        fprintf(output,"Record_ID,Exam_Score\n");
-        for (int i = 0; i < num_records; i++) {
-            if(data[i].attendance == 100){
-            fprintf(output,"%d,%d\n",data[i].record_id,data[i].exam_score);
-            }
-        }
-        break;
 
         case 5:
         fprintf(output,"Record_ID,Exam_Score\n");
@@ -199,13 +204,23 @@ void process_task(int task, CurricularData data[], int num_records) {
         break;
 
         case 6:
-        fprintf(output,"Record_ID,Exam_Score,Extracurricular_Activities\n");
-        for(int i = 0; i < num_records; i++){
-            if(data[i].exam_score < 60){
-                fprintf(output,"%d,%d,%s\n",data[i].record_id,data[i].exam_score,data[i].extracurricular_activities);
+        fprintf(output, "Record_ID,Exam_Score,Extracurricular_Activities\n");
+        for (int i = 0; i < num_records; i++) {
+            if (data[i].exam_score < 60) {
+                if (strcasecmp(data[i].extracurricular_activities, "Yes") != 0) { //To check "Yes" case-insensitively
+                    strcpy(data[i].extracurricular_activities, "No");
+                }
+                printf("Debug: Writing to CSV -> Record_ID=%d, Exam_Score=%d, Extracurricular_Activities=%s\n", //Debug print to check each record before writing
+                    data[i].record_id, data[i].exam_score, data[i].extracurricular_activities);
+
+                fprintf(output, "%d,%d,%s\n", 
+                        data[i].record_id, 
+                        data[i].exam_score, 
+                        data[i].extracurricular_activities);
             }
         }
         break;
+
 
     }
     fclose(output);
