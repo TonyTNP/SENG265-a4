@@ -1,7 +1,0 @@
-#!/bin/bash
-if (($# < 1))
-then
-    python demo/validator
-else
-    python demo/validator "$1"
-fi
