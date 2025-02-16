@@ -33,10 +33,10 @@ def main():
     # Filter race winners (positionOrder == 1)
     winners_df = results_df[results_df['positionOrder'] == 1]
 
-    # Merge winners with driver information to get nationality
+    # Merge winners with driver information
     merged_df = winners_df.merge(drivers_df, on='driverId', how='left')
 
-    # Count winners by nationality and get the top 10
+    # Count winners by nationality
     top_countries = (
         merged_df.groupby('nationality')
         .size()
@@ -46,7 +46,8 @@ def main():
     )
 
     # Print results
-    print(top_countries)
+    print("Top 10 countries with most F1 race winners:")
+    print(top_countries.to_string(index=False))
 
 if __name__ == "__main__":
     main()
