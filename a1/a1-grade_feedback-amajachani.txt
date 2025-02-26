@@ -1,0 +1,60 @@
+SENG 265 -- SPRING 2025
+ASSIGNMENT-1 EVALUATION
+=====================================
+
+Student Name: Ashton Majachani
+Student V-Number: V00990297
+Student NetlinkID: amajachani
+-----
+(1) spf_analyzer.c submitted to the correct folder and named appropriately; compiles without errors or warnings.
+Compilation status: Compiled successfully
+
+-----
+(2) Tests passed (and further comments)
+
+[tester] (INFO): Tests to run: 6
+[tester] (INFO): |Test 01|----------------------------------------
+[tester] (INFO): Attempting: ./spf_analyzer --TASK="1"
+[tester] (INFO): TEST PASSED: True
+[tester] (INFO): |Test 02|----------------------------------------
+[tester] (INFO): Attempting: ./spf_analyzer --TASK="2"
+[tester] (INFO): TEST PASSED: False
+[tester] (INFO): DIFFERENCES: {'added': [{'Extracurricular_Activities': 'No', 'Physical_Activity': '3', 'Record_ID': '0', 'Sleep_Hours': '7'}, {'Extracurricular_Activities': 'No', 'Physical_Activity': '4', 'Record_ID': '1', 'Sleep_Hours': '8'}, {'Extracurricular_Activities': 'Yes', 'Physical_Activit... [output truncated, run the tester manually to see the full diff]
+[tester] (INFO): |Test 03|----------------------------------------
+[tester] (INFO): Attempting: ./spf_analyzer --TASK="3"
+[tester] (INFO): TEST PASSED: False
+[tester] (INFO): DIFFERENCES: {'added': [{'Record_ID': '94', 'Hours_Studied': '18', 'Attendance': '89', 'Tutoring_Sessions': '3', 'Exam_Score': '100', 'Extracurricular_Activities': 'Yes', 'Physical_Activity': '2', 'Sleep_Hours': '4'}, {'Record_ID': '529', 'Hours_Studied': '15', 'Attendance': '83', '... [output truncated, run the tester manually to see the full diff]
+[tester] (INFO): |Test 04|----------------------------------------
+[tester] (INFO): Attempting: ./spf_analyzer --TASK="4"
+[tester] (INFO): TEST PASSED: True
+[tester] (INFO): |Test 05|----------------------------------------
+[tester] (INFO): Attempting: ./spf_analyzer --TASK="5"
+[tester] (INFO): TEST PASSED: True
+[tester] (INFO): |Test 06|----------------------------------------
+[tester] (INFO): Attempting: ./spf_analyzer --TASK="6"
+[tester] (INFO): TEST PASSED: False
+[tester] (INFO): DIFFERENCES: {'added': [{'Record_ID': '504', 'Exam_Score': '59', 'Extracurricular_Activities': 'Yes'}, {'Record_ID': '646', 'Exam_Score': '59', 'Extracurricular_Activities': 'Yes'}, {'Record_ID': '1160', 'Exam_Score': '59', 'Extracurricular_Activities': 'Yes'}, {'Record_ID': '1210',... [output truncated, run the tester manually to see the full diff]
+[tester] (INFO): ------------------------------------------------
+[tester] (INFO): TESTS PASSED: 3/6
+
+
+
+-----
+(3) Code formatting and structure:
+
+
+Positive aspects:
+- The naming of variables seems to be consistent and meaningful throughout the code.
+- The code is well-structured and easy to follow.
+- The code does not have any unused variables or functions.
+
+Improvement opportunities:
+- Some functions lack proper documentation above their signatures, making it difficult to understand their purpose, parameters, and return values. Make sure to document each function properly using a consistent format, ideally resembling the Doxygen style.
+- Some functions perform multiple tasks or are very large, which makes the code difficult to read and maintain.
+- The code has inconsistent spacing between functions and other coding elements.
+
+
+
+-----
+GRADE: D
+MARKS: 59
