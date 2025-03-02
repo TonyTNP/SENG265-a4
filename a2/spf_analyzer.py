@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
+Ashton Majachani
+V00990297
+03.01.2025
 Student Performance Factors Analyzer
 
 Based on: https://www.kaggle.com/datasets/lainguyn123/student-performance-factors
@@ -111,23 +114,39 @@ def compute_tutoring_stats(df: pd.DataFrame) -> pd.DataFrame:
                 return grade
         return None
 
+    # Assign grades
     df = df.copy()
     df['Grade'] = df['Exam_Score'].apply(get_grade)
     df.dropna(subset=['Grade'], inplace=True)
 
-    df['Tutoring_Sessions'] = df['Tutoring_Sessions'].apply(
-        lambda x: float(Decimal(str(x)).quantize(Decimal('0.1'), rounding=ROUND_HALF_UP))
-    )
+    # Ensure Tutoring_Sessions are properly formatted
+    def format_tutoring_sessions(x):
+        """Ensures tutoring session values are properly formatted as int or rounded float."""
+        if isinstance(x, int):  
+            return x  
+        elif isinstance(x, float) and x.is_integer():
+            return int(x)  # Convert whole-number floats to int
+        else:
+            return float(Decimal(str(x)).quantize(Decimal('0.1'), rounding=ROUND_HALF_UP))
 
+    df['Tutoring_Sessions'] = df['Tutoring_Sessions'].apply(format_tutoring_sessions)
+
+    # Compute the average tutoring sessions per grade
     avg_tutoring = df.groupby('Grade', as_index=False)['Tutoring_Sessions'].mean()
+
+    # Format the average tutoring sessions correctly (rounded to 1 decimal place)
     avg_tutoring['Grade_Average_Tutoring_Sessions'] = avg_tutoring['Tutoring_Sessions'].apply(
         lambda x: float(Decimal(str(x)).quantize(Decimal('0.1'), rounding=ROUND_HALF_UP))
     )
     avg_tutoring.drop(columns=['Tutoring_Sessions'], inplace=True)
 
+    # Merge with original dataframe to get tutoring session comparison
     df = df.merge(avg_tutoring, on='Grade', how='left')
+
+    # Check if each student's tutoring sessions are above the grade average
     df['Above_Average'] = df['Tutoring_Sessions'] > df['Grade_Average_Tutoring_Sessions']
 
+    # Ensure proper sorting and return required columns
     return (df[['Record_ID', 'Tutoring_Sessions', 'Grade_Average_Tutoring_Sessions', 'Above_Average', 'Exam_Score', 'Grade']]
             .sort_values(by=['Exam_Score', 'Record_ID'], ascending=[False, True])
             .head(50))
@@ -135,7 +154,11 @@ def compute_tutoring_stats(df: pd.DataFrame) -> pd.DataFrame:
 
 def save_output(df: pd.DataFrame, output_file: str = 'output.csv') -> None:
     """Save the DataFrame to a CSV file and print it to the console."""
-    df.to_csv(output_file, index=False)
+    df.to_csv(output_file, index=False, float_format="%.1f")  # Ensure 1 decimal place only where needed
+
+    # Convert float values that are whole numbers into integers for display
+    df = df.applymap(lambda x: int(x) if isinstance(x, float) and x.is_integer() else x)
+
     print(f"Output saved to {output_file}\n")
     print("Final output:")
     print(df.to_string(index=False))
