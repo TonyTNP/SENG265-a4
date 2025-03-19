@@ -8,6 +8,7 @@
 
 #define MAX_LINE_LEN 256
 
+// Function to detect the number of columns in the CSV file
 int detect_column_count(const char *filename) {
     FILE *file = fopen(filename, "r");
     if (!file) {
@@ -29,6 +30,7 @@ int detect_column_count(const char *filename) {
     return count;
 }
 
+// Function to process the CSV file
 void process_csv(const char *filename, student_t **list, int task_id) {
     FILE *file = fopen(filename, "r");
     if (!file) {
@@ -65,9 +67,9 @@ void process_csv(const char *filename, student_t **list, int task_id) {
         printf("Parsed: ID=%d, Attendance=%d, Extra=%d (%s), Hours=%d, Score=%d\n", 
                 record_id, attendance, extra, extracurricular, hours_studied, exam_score);
 
-        //Makes Task 1 select students based on exam scores when attendance isn't available
-        if ((task_id == 1 && column_count == 5 && attendance == 100 && extra) ||
-            (task_id == 1 && column_count == 2 && exam_score >= 70) ||  
+        // Task-specific selection criteria
+        if ((task_id == 1 && column_count == 5 && attendance == 100 && extra) || 
+            (task_id == 1 && column_count == 2) ||  // Allow all records when only 2 columns are present
             (task_id == 2 && hours_studied > 40) ||
             (task_id == 3 && exam_score >= 85)) {
 
@@ -81,6 +83,7 @@ void process_csv(const char *filename, student_t **list, int task_id) {
     printf("Total matching records for Task %d: %d\n", task_id, count);
 }
 
+// Function to write the output CSV file
 void write_output(student_t *list, int task_id) {
     FILE *file = fopen("output.csv", "w");
     if (!file) {
@@ -115,6 +118,7 @@ void write_output(student_t *list, int task_id) {
     fclose(file);
 }
 
+// Main function
 int main(int argc, char *argv[]) {
     if (argc != 3) {
         printf("Usage: %s <input_file.csv> <task_id>\n", argv[0]);

@@ -14,6 +14,10 @@ node_t *new_node(char *val) {
     assert(val != NULL);
     node_t *temp = (node_t *)emalloc(sizeof(node_t));
     temp->word = strdup(val);
+    if (temp->word == NULL) {
+        perror("Memory allocation failed");
+        exit(1);
+    }
     temp->next = NULL;
     return temp;
 }
@@ -34,12 +38,16 @@ node_t *add_front(node_t *list, node_t *new) {
  * @brief  Adds a node at the end of the list.
  */
 node_t *add_end(node_t *list, node_t *new) {
-    node_t *curr;
     if (list == NULL) {
         return new;
     }
-    for (curr = list; curr->next != NULL; curr = curr->next);
+    
+    node_t *curr = list;
+    while (curr->next != NULL) {
+        curr = curr->next;
+    }
     curr->next = new;
+    
     return list;
 }
 

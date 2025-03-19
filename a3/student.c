@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include "student.h"
 
-//Creates a new student node
+// Creates a new student node
 student_t *new_student(int record_id, int attendance, bool extra, int hours_studied, int exam_score) {
     student_t *new_node = (student_t *)malloc(sizeof(student_t));
     if (!new_node) {
@@ -21,29 +21,27 @@ student_t *new_student(int record_id, int attendance, bool extra, int hours_stud
     return new_node;
 }
 
-//Adds a student node while maintaining sorted order based on `task_id`
+// Adds a student node while maintaining sorted order
 student_t *add_student_sorted(student_t *list, student_t *new, int task_id) {
-    if (list == NULL || new->exam_score > list->exam_score || 
-       (new->exam_score == list->exam_score && new->record_id < list->record_id)) {
+    if (list == NULL || new->record_id < list->record_id) {
         new->next = list;
         return new;
     }
 
-    student_t *curr = list;
-    while (curr->next != NULL &&
-           (curr->next->exam_score > new->exam_score ||
-           (curr->next->exam_score == new->exam_score && curr->next->record_id < new->record_id))) {
+    student_t *curr = list, *prev = NULL;
+    
+    while (curr != NULL && new->record_id > curr->record_id) {
+        prev = curr;
         curr = curr->next;
     }
 
-    new->next = curr->next;
-    curr->next = new;
+    prev->next = new;
+    new->next = curr;
 
     return list;
 }
 
-
-//Frees the student list
+// Frees the student list
 void free_student_list(student_t *list) {
     student_t *temp;
     while (list) {
