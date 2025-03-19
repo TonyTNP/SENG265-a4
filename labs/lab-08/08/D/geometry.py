@@ -1,3 +1,9 @@
+"""
+Ashton Majachani
+SENG 265 Lab 8
+Due 03.15.2025
+"""
+
 import math
 import doctest
 

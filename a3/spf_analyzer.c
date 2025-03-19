@@ -1,101 +1,132 @@
-/** @file route_manager.c
- *  @brief A small program to analyze airline routes data.
- *  @author Mike Z.
- *  @author Felipe R.
- *  @author Hausi M.
- *  @author Jose O.
- *  @author STUDENT_NAME
- *
- */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "list.h"
+#include "emalloc.h"
+#include "student.h"
 
-// TODO: Make sure to adjust this based on the input files given
-#define MAX_LINE_LEN 80
+#define MAX_LINE_LEN 256
 
-/**
- * @brief Serves as an incremental counter for navigating the list.
- *
- * @param p The pointer of the node to print.
- * @param arg The pointer of the index.
- *
- */
-void inccounter(node_t *p, void *arg)
-{
-    int *ip = (int *)arg;
-    (*ip)++;
-}
-
-/**
- * @brief Allows to print out the content of a node.
- *
- * @param p The pointer of the node to print.
- * @param arg The format of the string.
- *
- */
-void print_node(node_t *p, void *arg)
-{
-    char *fmt = (char *)arg;
-    printf(fmt, p->word);
-}
-
-/**
- * @brief Allows to print each node in the list.
- *
- * @param l The first node in the list
- *
- */
-void analysis(node_t *l)
-{
-    int len = 0;
-
-    apply(l, inccounter, &len);
-    printf("Number of words: %d\n", len);
-
-    apply(l, print_node, "%s\n");
-}
-
-/**
- * @brief The main function and entry point of the program.
- *
- * @param argc The number of arguments passed to the program.
- * @param argv The list of arguments passed to the program.
- * @return int 0: No errors; 1: Errors produced.
- *
- */
-int main(int argc, char *argv[])
-{
-    // Initial dummy code
-    char *line = NULL;
-    char *t;
-    int num = 0;
-    node_t *list = NULL;
-    line = (char *)malloc(sizeof(char) * MAX_LINE_LEN);
-    strcpy(line, "this is the starting point for A3.");
-
-    // Creating the nodes for the ordered list
-    t = strtok(line, " ");
-    while (t)
-    {
-        num++;
-        list = add_inorder(list, new_node(t));
-        t = strtok(NULL, " ");
+int detect_column_count(const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        perror("Error opening file");
+        exit(1);
     }
 
-    // Printing out the content of the sorted list
-    analysis(list);
+    char line[MAX_LINE_LEN];
+    fgets(line, MAX_LINE_LEN, file); // Read header
 
-    // Releasing the space allocated for the list and other emalloc'ed elements
-    node_t *temp_n = NULL;
-    for (; list != NULL; list = temp_n)
-    {
-        temp_n = list->next;
-        free(list->word);
-        free(list);
+    int count = 0;
+    char *token = strtok(line, ",");
+    while (token) {
+        count++;
+        token = strtok(NULL, ",");
     }
-    free(line);
 
-    exit(0);
+    fclose(file);
+    return count;
+}
+
+void process_csv(const char *filename, student_t **list, int task_id) {
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        perror("Error opening file");
+        exit(1);
+    }
+
+    char line[MAX_LINE_LEN];
+    fgets(line, MAX_LINE_LEN, file); // Skip header
+
+    int column_count = detect_column_count(filename);
+    printf("Processing file: %s\nDetected column count: %d\n", filename, column_count);
+
+    int count = 0;
+
+    while (fgets(line, MAX_LINE_LEN, file)) {
+        int record_id = 0, attendance = 0, hours_studied = 0, exam_score = 0;
+        char extracurricular[10] = "No"; // Default value
+
+        int parsed = 0;
+        if (column_count == 2) {
+            parsed = sscanf(line, "%d,%d", &record_id, &exam_score);
+        } else if (column_count == 5) {
+            parsed = sscanf(line, "%d,%d,%9s,%d,%d", &record_id, &attendance, extracurricular, &hours_studied, &exam_score);
+        }
+
+        if (parsed < 2) {
+            printf("Warning: Skipping malformed line: %s\n", line);
+            continue;
+        }
+
+        bool extra = (strcmp(extracurricular, "Yes") == 0);
+
+        printf("Parsed: ID=%d, Attendance=%d, Extra=%d (%s), Hours=%d, Score=%d\n", 
+                record_id, attendance, extra, extracurricular, hours_studied, exam_score);
+
+        //Makes Task 1 select students based on exam scores when attendance isn't available
+        if ((task_id == 1 && column_count == 5 && attendance == 100 && extra) ||
+            (task_id == 1 && column_count == 2 && exam_score >= 70) ||  
+            (task_id == 2 && hours_studied > 40) ||
+            (task_id == 3 && exam_score >= 85)) {
+
+            student_t *new = new_student(record_id, attendance, extra, hours_studied, exam_score);
+            *list = add_student_sorted(*list, new, task_id);
+            count++;
+        }
+    }
+
+    fclose(file);
+    printf("Total matching records for Task %d: %d\n", task_id, count);
+}
+
+void write_output(student_t *list, int task_id) {
+    FILE *file = fopen("output.csv", "w");
+    if (!file) {
+        perror("Error opening output file");
+        return;
+    }
+
+    if (task_id == 1) {
+        fprintf(file, "Record_ID,Exam_Score\n");
+    } else if (task_id == 2) {
+        fprintf(file, "Record_ID,Hours_Studied,Exam_Score\n");
+    } else if (task_id == 3) {
+        fprintf(file, "Record_ID,Attendance,Extra,Hours_Studied,Exam_Score\n");
+    }
+
+    while (list != NULL) {
+        if (task_id == 1) {
+            fprintf(file, "%d,%d\n", list->record_id, list->exam_score);
+        } else if (task_id == 2) {
+            fprintf(file, "%d,%d,%d\n", list->record_id, list->hours_studied, list->exam_score);
+        } else if (task_id == 3) {
+            fprintf(file, "%d,%d,%d,%d,%d\n",
+                    list->record_id, 
+                    list->attendance, 
+                    list->extra,  
+                    list->hours_studied, 
+                    list->exam_score);
+        }
+        list = list->next;
+    }
+
+    fclose(file);
+}
+
+int main(int argc, char *argv[]) {
+    if (argc != 3) {
+        printf("Usage: %s <input_file.csv> <task_id>\n", argv[0]);
+        return 1;
+    }
+
+    student_t *list = NULL;
+    int task_id = atoi(argv[2]);
+
+    process_csv(argv[1], &list, task_id);
+    write_output(list, task_id);
+    free_student_list(list);
+
+    return 0;
 }
