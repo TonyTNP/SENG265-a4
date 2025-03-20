@@ -53,6 +53,8 @@ void process_csv(const char *filename, student_t **list, int task_id) {
         int parsed = 0;
         if (column_count == 2) {
             parsed = sscanf(line, "%d,%d", &record_id, &exam_score);
+        } else if (column_count == 3) { 
+            parsed = sscanf(line, "%d,%d,%d", &record_id, &hours_studied, &exam_score);
         } else if (column_count == 5) {
             parsed = sscanf(line, "%d,%d,%9s,%d,%d", &record_id, &attendance, extracurricular, &hours_studied, &exam_score);
         }
@@ -68,13 +70,20 @@ void process_csv(const char *filename, student_t **list, int task_id) {
                 record_id, attendance, extra, extracurricular, hours_studied, exam_score);
 
         // Task-specific selection criteria
-        if ((task_id == 1 && column_count == 5 && attendance == 100 && extra) || 
-            (task_id == 1 && column_count == 2) ||  // Allow all records when only 2 columns are present
-            (task_id == 2 && hours_studied > 40) ||
+        if ((task_id == 1 && column_count == 2) ||  
+            (task_id == 2 && column_count >= 3 && hours_studied > 40) ||
             (task_id == 3 && exam_score >= 85)) {
 
             student_t *new = new_student(record_id, attendance, extra, hours_studied, exam_score);
-            *list = add_student_sorted(*list, new, task_id);
+
+            if (task_id == 1) {
+                // Append Task 1 records in input order
+                *list = add_student_end(*list, new);
+            } else {
+                // Task 2 & 3: Ensure sorting (highest score first)
+                *list = add_student_sorted(*list, new, task_id);
+            }
+
             count++;
         }
     }
@@ -91,6 +100,7 @@ void write_output(student_t *list, int task_id) {
         return;
     }
 
+    // Ensure correct headers for each task
     if (task_id == 1) {
         fprintf(file, "Record_ID,Exam_Score\n");
     } else if (task_id == 2) {
@@ -99,17 +109,28 @@ void write_output(student_t *list, int task_id) {
         fprintf(file, "Record_ID,Attendance,Extra,Hours_Studied,Exam_Score\n");
     }
 
+    // Ensure sorting for Task 2 by Exam Score (descending)
+    if (task_id == 2) {
+        list = sort_students(list, task_id);
+    }
+
+    // Write data
+    int count = 0;
     while (list != NULL) {
         if (task_id == 1) {
+            // Task 1: Output should match `tests/test01.csv`
             fprintf(file, "%d,%d\n", list->record_id, list->exam_score);
         } else if (task_id == 2) {
+            // Task 2: Ensure proper format (`Record_ID,Hours_Studied,Exam_Score`)
+            if (count >= 10) break;  // Ensure max 10 records
             fprintf(file, "%d,%d,%d\n", list->record_id, list->hours_studied, list->exam_score);
+            count++;
         } else if (task_id == 3) {
             fprintf(file, "%d,%d,%d,%d,%d\n",
-                    list->record_id, 
-                    list->attendance, 
-                    list->extra,  
-                    list->hours_studied, 
+                    list->record_id,
+                    list->attendance,
+                    list->extra,
+                    list->hours_studied,
                     list->exam_score);
         }
         list = list->next;

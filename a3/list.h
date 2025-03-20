@@ -1,23 +1,11 @@
-#ifndef _LINKEDLIST_H_
-#define _LINKEDLIST_H_
+#ifndef LIST_H
+#define LIST_H
 
-#define MAX_WORD_LEN 50
+#include "student.h"
 
-/**
- * @brief A struct that represents a node in the linked list.
- */
-typedef struct node_t {
-    char *word;
-    struct node_t *next;
-} node_t;
-
-/**
- * Function prototypes associated with a linked list.
- */
-node_t *new_node(char *val);
-node_t *add_front(node_t *, node_t *);
-node_t *add_end(node_t *, node_t *);
-node_t *add_inorder(node_t *, node_t *);
-void free_list(node_t *list);  
+student_t *add_student_sorted(student_t *head, student_t *new_student, int task_id);
+student_t *add_student_end(student_t *head, student_t *new_student);
+student_t *sort_students(student_t *head, int task_id);
+void free_student_list(student_t *head);
 
 #endif

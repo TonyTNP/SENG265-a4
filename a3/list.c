@@ -1,90 +1,84 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-#include "emalloc.h"
 #include "list.h"
+#include "student.h"
+#include "emalloc.h"
 
-/**
- * Function:  new_node
- * -------------------
- * @brief  Dynamically allocates memory for a new node.
- */
-node_t *new_node(char *val) {
-    assert(val != NULL);
-    node_t *temp = (node_t *)emalloc(sizeof(node_t));
-    temp->word = strdup(val);
-    if (temp->word == NULL) {
-        perror("Memory allocation failed");
-        exit(1);
+// Append student at the end of the list (For Task 1)
+student_t *add_student_end(student_t *head, student_t *new_student) {
+    if (head == NULL) {
+        return new_student;
     }
-    temp->next = NULL;
-    return temp;
+    student_t *temp = head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = new_student;
+    return head;
 }
 
-/**
- * Function:  add_front
- * --------------------
- * @brief  Adds a node at the front of the list.
- */
-node_t *add_front(node_t *list, node_t *new) {
-    new->next = list;
-    return new;
+// Sort and insert a student into the list (For Task 2 & 3)
+student_t *add_student_sorted(student_t *head, student_t *new_student, int task_id) {
+    if (head == NULL || new_student->exam_score > head->exam_score) {
+        new_student->next = head;
+        return new_student;
+    }
+
+    student_t *current = head;
+    while (current->next != NULL && current->next->exam_score >= new_student->exam_score) {
+        current = current->next;
+    }
+
+    new_student->next = current->next;
+    current->next = new_student;
+
+    return head;
 }
 
-/**
- * Function:  add_end
- * ------------------
- * @brief  Adds a node at the end of the list.
- */
-node_t *add_end(node_t *list, node_t *new) {
-    if (list == NULL) {
-        return new;
+// Bubble sort students by exam score (For Task 2)
+student_t *sort_students(student_t *head, int task_id) {
+    if (head == NULL || head->next == NULL) {
+        return head;
     }
-    
-    node_t *curr = list;
-    while (curr->next != NULL) {
-        curr = curr->next;
-    }
-    curr->next = new;
-    
-    return list;
+
+    int swapped;
+    student_t *ptr1;
+    student_t *lptr = NULL;
+
+    do {
+        swapped = 0;
+        ptr1 = head;
+
+        while (ptr1->next != lptr) {
+            if (ptr1->exam_score < ptr1->next->exam_score) {
+                int temp_id = ptr1->record_id;
+                int temp_score = ptr1->exam_score;
+                int temp_hours = ptr1->hours_studied;
+
+                ptr1->record_id = ptr1->next->record_id;
+                ptr1->exam_score = ptr1->next->exam_score;
+                ptr1->hours_studied = ptr1->next->hours_studied;
+
+                ptr1->next->record_id = temp_id;
+                ptr1->next->exam_score = temp_score;
+                ptr1->next->hours_studied = temp_hours;
+
+                swapped = 1;
+            }
+            ptr1 = ptr1->next;
+        }
+        lptr = ptr1;
+    } while (swapped);
+
+    return head;
 }
 
-/**
- * Function:  add_inorder
- * ----------------------
- * @brief  Adds a new node in sorted order.
- */
-node_t *add_inorder(node_t *list, node_t *new) {
-    node_t *prev = NULL, *curr = list;
-
-    while (curr != NULL && strcmp(new->word, curr->word) > 0) {
-        prev = curr;
-        curr = curr->next;
-    }
-
-    new->next = curr;
-
-    if (prev == NULL) {
-        return new;
-    } else {
-        prev->next = new;
-        return list;
-    }
-}
-
-/**
- * Function: free_list
- * -------------------
- * @brief Frees all nodes in the linked list.
- */
-void free_list(node_t *list) {
-    node_t *temp;
-    while (list != NULL) {
-        temp = list->next;
-        free(list->word);
-        free(list);
-        list = temp;
+// Free student list
+void free_student_list(student_t *head) {
+    student_t *temp;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
     }
 }

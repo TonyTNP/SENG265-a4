@@ -12,9 +12,10 @@ typedef struct student {
     struct student *next;
 } student_t;
 
-// Function prototypes
+// Two constructors: Full and Task 2 specific
 student_t *new_student(int record_id, int attendance, bool extra, int hours_studied, int exam_score);
-student_t *add_student_sorted(student_t *list, student_t *new_student, int task_id);  
-void free_student_list(student_t *list);  
+student_t *new_student_task2(int record_id, int hours_studied, int exam_score);
 
-#endif // STUDENT_H
+void free_student_list(student_t *head);
+
+#endif
