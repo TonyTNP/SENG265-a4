@@ -80,7 +80,7 @@ void process_csv(const char *filename, student_t **list, int task_id) {
                 // Append Task 1 records in input order
                 *list = add_student_end(*list, new);
             } else {
-                // Task 2 & 3: Ensure sorting (highest score first)
+                // Task 2 & 3: Ensure sorting (Task 2 DESC, Task 3 ASC)
                 *list = add_student_sorted(*list, new, task_id);
             }
 
@@ -103,35 +103,23 @@ void write_output(student_t *list, int task_id) {
     // Ensure correct headers for each task
     if (task_id == 1) {
         fprintf(file, "Record_ID,Exam_Score\n");
-    } else if (task_id == 2) {
+    } else if (task_id == 2 || task_id == 3) {
         fprintf(file, "Record_ID,Hours_Studied,Exam_Score\n");
-    } else if (task_id == 3) {
-        fprintf(file, "Record_ID,Attendance,Extra,Hours_Studied,Exam_Score\n");
     }
 
-    // Ensure sorting for Task 2 by Exam Score (descending)
-    if (task_id == 2) {
+    // Ensure sorting for Task 3 by Exam Score ASC, Record_ID ASC
+    if (task_id == 3) {
         list = sort_students(list, task_id);
     }
 
-    // Write data
+    // Write only 10 records for Task 2 & Task 3
     int count = 0;
     while (list != NULL) {
         if (task_id == 1) {
-            // Task 1: Output should match `tests/test01.csv`
             fprintf(file, "%d,%d\n", list->record_id, list->exam_score);
-        } else if (task_id == 2) {
-            // Task 2: Ensure proper format (`Record_ID,Hours_Studied,Exam_Score`)
-            if (count >= 10) break;  // Ensure max 10 records
+        } else if ((task_id == 2 || task_id == 3) && count < 10) {
             fprintf(file, "%d,%d,%d\n", list->record_id, list->hours_studied, list->exam_score);
             count++;
-        } else if (task_id == 3) {
-            fprintf(file, "%d,%d,%d,%d,%d\n",
-                    list->record_id,
-                    list->attendance,
-                    list->extra,
-                    list->hours_studied,
-                    list->exam_score);
         }
         list = list->next;
     }
