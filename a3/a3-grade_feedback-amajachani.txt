@@ -1,0 +1,64 @@
+SENG 265 -- SPRING 2025  
+ASSIGNMENT #3 EVALUATION  
+========================
+
+Student Name: Ashton Majachani  
+Student V-Number: V00990297  
+Student NetlinkID: amajachani  
+
+-----  
+(1) Assignment files compile without errors  
+
+gcc -c -Wall -g -DDEBUG -D_GNU_SOURCE -std=c99 -O0 spf_analyzer.c  
+gcc -c -Wall -g -DDEBUG -D_GNU_SOURCE -std=c99 -O0 list.c  
+gcc -c -Wall -g -DDEBUG -D_GNU_SOURCE -std=c99 -O0 emalloc.c  
+gcc -c -Wall -g -DDEBUG -D_GNU_SOURCE -std=c99 -O0 student.c  
+gcc spf_analyzer.o list.o emalloc.o student.o -o spf_analyzer  
+./prep.py (INFO): Copied given files to /home/rivera/seng265/seng265-202501-team-repo/assignments/a3/build/amajachani  
+./prep.py (INFO): Trying to copy /home/rivera/seng265/seng265-202501-team-repo/assignments/a3/submissions/amajachani/a3 from the submission by the student...  
+./prep.py (INFO): /home/rivera/seng265/seng265-202501-team-repo/assignments/a3/submissions/amajachani/a3/emalloc.c copied to /home/rivera/seng265/seng265-202501-team-repo/assignments/a3/build/amajachani/emalloc.c  
+./prep.py (INFO): /home/rivera/seng265/seng265-202501-team-repo/assignments/a3/submissions/amajachani/a3/emalloc.h copied to /home/rivera/seng265/seng265-202501-team-repo/assignments/a3/build/amajachani/emalloc.h  
+./prep.py (INFO): /home/rivera/seng265/seng265-202501-team-repo/assignments/a3/submissions/amajachani/a3/list.c copied to /home/rivera/seng265/seng265-202501-team-repo/assignments/a3/build/amajachani/list.c  
+./prep.py (INFO): /home/rivera/seng265/seng265-202501-team-repo/assignments/a3/submissions/amajachani/a3/list.h copied to /home/rivera/seng265/seng265-202501-team-repo/assignments/a3/build/amajachani/list.h  
+./prep.py (INFO): /home/rivera/seng265/seng265-202501-team-repo/assignments/a3/submissions/amajachani/a3/makefile copied to /home/rivera/seng265/seng265-202501-team-repo/assignments/a3/build/amajachani/makefile  
+./prep.py (INFO): /home/rivera/seng265/seng265-202501-team-repo/assignments/a3/submissions/amajachani/a3/spf_analyzer.c copied to /home/rivera/seng265/seng265-202501-team-repo/assignments/a3/build/amajachani/spf_analyzer.c  
+./prep.py (INFO): /home/rivera/seng265/seng265-202501-team-repo/assignments/a3/submissions/amajachani/a3/student.c copied to /home/rivera/seng265/seng265-202501-team-repo/assignments/a3/build/amajachani/student.c  
+./prep.py (INFO): /home/rivera/seng265/seng265-202501-team-repo/assignments/a3/submissions/amajachani/a3/student.h copied to /home/rivera/seng265/seng265-202501-team-repo/assignments/a3/build/amajachani/student.h  
+./prep.py (INFO): Compiling...  
+./prep.py (INFO): Ready to run tests for "amajachani"  
+
+-----  
+(2) Tests passed (and further comments)  
+
+[tester] (INFO): Tests to run: 3  
+[tester] (INFO): |Test 01|----------------------------------------  
+[tester] (INFO): Attempting: ./spf_analyzer --TASK="1"  
+[tester] (INFO): spf_analyzer should generate output.csv for this test.  
+[tester] (INFO): TEST PASSED: False  
+[tester] (INFO): |Test 02|----------------------------------------  
+[tester] (INFO): Attempting: ./spf_analyzer --TASK="2"  
+[tester] (INFO): spf_analyzer should generate output.csv for this test.  
+[tester] (INFO): TEST PASSED: False  
+[tester] (INFO): |Test 03|----------------------------------------  
+[tester] (INFO): Attempting: ./spf_analyzer --TASK="3"  
+[tester] (INFO): spf_analyzer should generate output.csv for this test.  
+[tester] (INFO): TEST PASSED: False  
+[tester] (INFO): ------------------------------------------------  
+[tester] (INFO): TESTS PASSED: 0/3  
+
+-----  
+(3) Code formatting and structure:  
+
+Positive aspects:  
+- The code is well-structured and easy to follow.  
+
+Improvement opportunities:  
+- Some functions lack proper documentation above their signatures, making it difficult to understand their purpose, parameters, and return values. Make sure to document each function properly using a consistent format, ideally resembling the Doxygen style.  
+- The naming of variables must be consistent and meaningful throughout the code.  
+- Some functions perform multiple tasks or are very large, which makes the code difficult to read and maintain.  
+- The code has inconsistent spacing between functions and other coding elements.  
+- The separation of concerns in the code could be improved. For example, all the operations related to linked lists (e.g., creating a new node, adding a node to the list, sorting the list) should be in list.c. All other operations should be in spf_analyzer.c.  
+
+-----  
+
+MARKS: 20
